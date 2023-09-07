@@ -3,11 +3,13 @@ package client
 import (
 	"context"
 	"errors"
+	"feather-kv/utils"
 	"log"
-	"time"
 	"net"
-	"github.com/DariaCrypto/Feather-KV-database/utils"
+	"time"
+
 	"github.com/DariaCrypto/Feather-KV-database/protocol"
+	"github.com/DariaCrypto/Feather-KV-database/utils"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -26,6 +28,7 @@ func New() *FeatherClient {
 	client := &FeatherClient{
 		buffer: *utils.NewBuffer(),
 		connPool: *NewConnectionPool(),
+		MsgHeader: make([]byte, utils.MSG_SIZE),
 	}
 	return client
 }
