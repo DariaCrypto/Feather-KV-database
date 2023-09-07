@@ -16,7 +16,7 @@ message Command {
     repeated string args = 2;
 }
 
-message Reoly {
+message Responce {
     repeated string values = 1;
     required string error = 2;
 }

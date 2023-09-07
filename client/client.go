@@ -54,12 +54,17 @@ func (c *FeatherClient) process(command *protocol.Command) (*protocol.Reply, err
 		return nil, err
 	}
 
-	reply, err := c.getReply(&cn)
+	reply, err := c.getResponce(cn)
 	return reply, err
 }
 
-func (c *FeatherClient) getReply(conn *net.Conn) (*protocol.Reply, error){
-	if read, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
+func (c *FeatherClient) getResponce(conn Connection) (*protocol.Reply, error){
+	if _, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
+		return nil, err
+	}
+
+	_, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE)
+	if err != nil {
 		return nil, err
 	}
 
@@ -67,15 +72,11 @@ func (c *FeatherClient) getReply(conn *net.Conn) (*protocol.Reply, error){
 	idCmd := int(utils.ByteArrayToUint64(c.MsgHeader))
 	msgBuf := c.buffer.Get().([]byte)
 	defer c.buffer.Put(msgBuf)
-	read, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE)
-	if err != nil {
+
+	resp := &protocol.Responce{}
+	if err := proto.Unmarshal(msgBuf[:idCmd], resp); err != nil {
 		return nil, err
 	}
 
-	reply := &protocol.Reply{}
-	if err := proto.Unmarshal(msgBuf[:idCmd], reply); err != nil {
-		return nil, err
-	}
-
-	return reply, nil
+	return resp, nil
 }

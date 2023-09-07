@@ -27,11 +27,11 @@ func NewConnection() (*Connection, error) {
 	return cn, nil
 }
 
-func (c *Connection) Read(b []byte) (n int, err error) {
+func (c Connection) Read(b []byte) (n int, err error) {
 	return c.netcn.Read(b)
 }
 
-func (c *Connection) Write(b []byte) (n int, err error) {
+func (c Connection) Write(b []byte) (n int, err error) {
 	return c.netcn.Write(b)
 }
 

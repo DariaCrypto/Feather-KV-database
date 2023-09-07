@@ -5,6 +5,9 @@ import (
 	"log"
 	"net"
 	"sync"
+	"github.com/DariaCrypto/Feather-KV-database/utils"
+	"github.com/DariaCrypto/Feather-KV-database/feather"
+
 )
 
 const (
@@ -14,12 +17,13 @@ const (
 
 type Server struct {
 	buffers *utils.BufferPool
-
+	hm *feather.HashMapCollection
+	ss *feather.SortedSetCollection
 }
 
 func FeatherServer() *Server {
 	return &Server{
-		pool: pool,
+		buffers: utils.NewBuffer(),
 	}
 }
 

@@ -2,16 +2,20 @@ package server
 
 import (
 	"errors"
+	"feather-kv/protocol"
 	"feather-kv/utils"
 	"net"
-	"feather-kv/protocol"
+	"github.com/DariaCrypto/Feather-KV-database/feather"
+
 	"google.golang.org/protobuf/proto"
 )
 
 type ConnHandler struct {
 	conn      net.Conn
-	server *Server
+	server    *Server
 	MsgHeader []byte
+	hm *feather.HashMapCollection
+	ss *feather.SortedSetCollection
 }
 
 func newClient(conn net.Conn) *ConnHandler {
@@ -24,7 +28,7 @@ func (c *ConnHandler) Exec() (reply []byte, err error) {
 
 	cmd := new(protocol.Command)
 
-	if read, err := utils.ReadData(c.conn, c.MsgHeader, MSG_SIZE); err != nil {
+	if read, err := utils.ReadData(c.conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
 		return nil, errors.New("")
 	}
 
