@@ -6,13 +6,13 @@ import (
 )
 
 type SortedSet struct {
-	nameSet string
+	name string
 	tree    *AVLNode
 	mu      sync.Mutex
 }
 
 func NewSortedSet(name string) *SortedSet {
-	return &SortedSet{nameSet: name, tree: nil}
+	return &SortedSet{name: name, tree: nil}
 }
 
 func (ss *SortedSet) addNode(value string, score uint32) {

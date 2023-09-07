@@ -13,10 +13,11 @@ const (
 )
 
 type HashMap struct {
-	mu sync.Mutex
-	count   uint32 // total number of elements in buckets
-	size    uint32 // size of buckets
-	buckets []Bucket
+	name        string
+	mu          sync.Mutex
+	count       uint32 // total number of elements in buckets
+	size        uint32 // size of buckets
+	buckets     []Bucket
 	isRehashing atomic.Bool
 }
 
@@ -31,9 +32,9 @@ type Node struct {
 	next  *Node
 }
 
-func NewHashMap() *HashMap {
+func NewHashMap(name string) *HashMap {
 	buckets := make([]Bucket, BUCKET_SIZE)
-	return &HashMap{size: BUCKET_SIZE, buckets: buckets}
+	return &HashMap{name: name, size: BUCKET_SIZE, buckets: buckets}
 }
 
 func (hashMap *HashMap) getLoadFactor() float32 {
@@ -108,7 +109,6 @@ func (hashMap *HashMap) Get(key string) (string, error) {
 	return "", errors.New("hashmap: there is no node with this key")
 }
 
-
 // Pop to HashMap
 func (hashMap *HashMap) Pop(key string) error {
 	index := hashMap.getIndexBucket(key, hashMap.size)
@@ -139,13 +139,13 @@ func (hashMap *HashMap) Pop(key string) error {
 
 func (h *HashMap) lockAllBackets() {
 	for idx, _ := range h.buckets {
-		h.buckets[idx].Locker.Lock()	
+		h.buckets[idx].Locker.Lock()
 	}
 }
 
 func (h *HashMap) unlockAllBackets() {
 	for idx, _ := range h.buckets {
-		h.buckets[idx].Locker.Unlock()	
+		h.buckets[idx].Locker.Unlock()
 	}
 }
 
@@ -156,7 +156,7 @@ func (hashMap *HashMap) rehash() {
 
 		size := hashMap.size << 1
 		newBuckets := make([]Bucket, size)
-		
+
 		for idx, _ := range hashMap.buckets {
 			bucket := &hashMap.buckets[idx]
 			if bucket.Data != nil {
@@ -197,5 +197,3 @@ func Hash(data []byte) uint32 {
 	}
 	return hash
 }
-
-

@@ -7,7 +7,7 @@ import (
 )
 
 func Test_Simple_Hashtable(t *testing.T) {
-	hashMap := NewHashMap()
+	hashMap := NewHashMap("Test")
 	ADDED_ELEMS_COUNT := 30_000
 
 	key := "Key"
@@ -33,7 +33,7 @@ func Test_Simple_Hashtable(t *testing.T) {
 }
 
 func Test_Parallel_RWD_Hashtable(t *testing.T) {
-	hashMap := NewHashMap()
+	hashMap := NewHashMap("Test")
 	ADDED_ELEMS_COUNT := 30_000
 	DELETED_ELEMS_COUNT := 5_000
 
@@ -102,7 +102,7 @@ func Test_Parallel_RWD_Hashtable(t *testing.T) {
 }
 
 func Benchmark_HashTable(b *testing.B) {
-	hashMap := NewHashMap()
+	hashMap := NewHashMap("Test")
 
 	key := "Key"
 	value := "Value"

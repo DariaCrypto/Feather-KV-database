@@ -1,0 +1,22 @@
+package protocol;
+
+enum CommandId{
+	PING = 0;
+	HSET = 1;
+    HDEL = 2;
+    HGET = 3;
+    ZADD = 4;
+    ZDELETE = 5;
+    ZMAX = 6;
+    ZMIN = 7;
+}
+
+message Command {
+	required CommandId command = 1;
+    repeated string args = 2;
+}
+
+message Reoly {
+    repeated string values = 1;
+    required string error = 2;
+}
