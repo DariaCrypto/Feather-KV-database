@@ -1,4 +1,4 @@
-module feather-kv
+module github.com/ddonskaya/feather
 
 go 1.19
 

@@ -45,6 +45,6 @@ func (s *Server) HandleTCP() error {
 			continue
 		}
 
-		go newClient(conn, s).handleCommand()
+		go newClient(conn).handleCommand()
 	}
 }

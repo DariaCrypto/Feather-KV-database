@@ -24,7 +24,7 @@ func newClient(conn net.Conn) *ConnHandler {
 	}
 }
 
-func (c *ConnHandler) Exec() (reply []byte, err error) {
+func (c *ConnHandler) HandleClientCmd() (reply []byte, err error) {
 
 	cmd := new(protocol.Command)
 
@@ -34,7 +34,7 @@ func (c *ConnHandler) Exec() (reply []byte, err error) {
 
 }
 
-func (c *ConnHandler) encodeReply(values []string, err error) ([]byte, error) {
+func (c *ConnHandler) encodeResponse(values []string, err error) ([]byte, error) {
 	var errMsg string
 
 	if err != nil {
@@ -43,7 +43,7 @@ func (c *ConnHandler) encodeReply(values []string, err error) ([]byte, error) {
 		errMsg = ""
 	}
 
-	return proto.Marshal(&protocol.Reply{
+	return proto.Marshal(&protocol.Response{
 		Values: values,
 		Error:  &errMsg,
 	})

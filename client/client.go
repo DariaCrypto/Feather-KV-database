@@ -54,11 +54,11 @@ func (c *FeatherClient) process(command *protocol.Command) (*protocol.Reply, err
 		return nil, err
 	}
 
-	reply, err := c.getResponce(cn)
+	reply, err := c.getResponse(cn)
 	return reply, err
 }
 
-func (c *FeatherClient) getResponce(conn Connection) (*protocol.Reply, error){
+func (c *FeatherClient) getResponse(conn Connection) (*protocol.Reply, error){
 	if _, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
 		return nil, err
 	}
