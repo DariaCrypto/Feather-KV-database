@@ -1,8 +1,11 @@
+syntax = "proto3";
 package protocol;
 
-enum CommandId{
-	PING = 0;
-	HSET = 1;
+option go_package = "github.com/ddonskaya/feather/protocol";
+
+enum CommandId {
+    PING = 0;
+    HSET = 1;
     HDEL = 2;
     HGET = 3;
     ZADD = 4;
@@ -12,11 +15,11 @@ enum CommandId{
 }
 
 message Command {
-	required CommandId command = 1;
+    optional CommandId command = 1;
     repeated string args = 2;
 }
 
 message Response {
     repeated string values = 1;
-    required string error = 2;
+    optional string error = 2;
 }
