@@ -5,8 +5,8 @@ import (
 	"log"
 	"net"
 	"sync"
-	"github.com/DariaCrypto/Feather-KV-database/utils"
-	"github.com/DariaCrypto/Feather-KV-database/feather"
+	"github.com/ddonskaya/feather/utils"
+	"github.com/ddonskaya/feather/collections"
 
 )
 
@@ -17,13 +17,15 @@ const (
 
 type Server struct {
 	buffers *utils.BufferPool
-	hm *feather.HashMapCollection
-	ss *feather.SortedSetCollection
+	hm collections.HashMapCollection
+	ss collections.SortedSetCollection
 }
 
 func FeatherServer() *Server {
 	return &Server{
 		buffers: utils.NewBuffer(),
+		hm: *collections.NewHashMapCollection(),
+		ss: collections.SortedSetCollection{},
 	}
 }
 
@@ -45,6 +47,6 @@ func (s *Server) HandleTCP() error {
 			continue
 		}
 
-		go newClient(conn).handleCommand()
+		go newClient(conn).HandleClientCmd()
 	}
 }

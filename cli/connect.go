@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/DariaCrypto/Feather-KV-database/client"
 )
 
 func ObtainClient(host string, port int) {

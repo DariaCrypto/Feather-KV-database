@@ -8,8 +8,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/DariaCrypto/Feather-KV-database/protocol"
-	"github.com/DariaCrypto/Feather-KV-database/utils"
+	"github.com/ddonskaya/feather/protocol"
+	"github.com/ddonskaya/feather/utils"
 	"google.golang.org/protobuf/proto"
 )
 
