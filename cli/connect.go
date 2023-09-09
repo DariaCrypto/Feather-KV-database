@@ -17,6 +17,6 @@ func connect(addr, network string) (*client.FeatherClient, error) {
 
 	if _, err := c.Ping() // check err connection
 	
-	log.Println("cli: connection is successful. Address connection is ", addr)
+	log.Println("cli: connection is successful. Address connection is")
 	return client, nil
 }

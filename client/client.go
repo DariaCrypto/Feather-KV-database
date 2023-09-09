@@ -1,13 +1,8 @@
 package client
 
 import (
-	"context"
 	"errors"
-	"feather-kv/utils"
 	"log"
-	"net"
-	"time"
-
 	"github.com/ddonskaya/feather/protocol"
 	"github.com/ddonskaya/feather/utils"
 	"google.golang.org/protobuf/proto"
@@ -24,7 +19,7 @@ type FeatherClient struct {
 	MsgHeader []byte
 }
 
-func New() *FeatherClient {
+func NewFeatherClient() *FeatherClient {
 	client := &FeatherClient{
 		buffer: *utils.NewBuffer(),
 		connPool: *NewConnectionPool(),
@@ -33,7 +28,7 @@ func New() *FeatherClient {
 	return client
 }
 
-func (c *FeatherClient) process(command *protocol.Command) (*protocol.Reply, error) {
+func PerformCommand(c *FeatherClient, command *protocol.Command) (*protocol.Response, error) {
 	//Get a connection from poolConnection
 	cn, err := c.connPool.Get()
 	defer c.connPool.Put(cn)
@@ -58,7 +53,7 @@ func (c *FeatherClient) process(command *protocol.Command) (*protocol.Reply, err
 	return reply, err
 }
 
-func (c *FeatherClient) getResponse(conn Connection) (*protocol.Reply, error){
+func (c *FeatherClient) getResponse(conn Connection) (*protocol.Response, error){
 	if _, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
 		return nil, err
 	}
@@ -73,7 +68,7 @@ func (c *FeatherClient) getResponse(conn Connection) (*protocol.Reply, error){
 	msgBuf := c.buffer.Get().([]byte)
 	defer c.buffer.Put(msgBuf)
 
-	resp := &protocol.Responce{}
+	resp := &protocol.Response{}
 	if err := proto.Unmarshal(msgBuf[:idCmd], resp); err != nil {
 		return nil, err
 	}

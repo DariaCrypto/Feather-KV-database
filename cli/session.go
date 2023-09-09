@@ -1,11 +1,8 @@
 package cli
 
 import (
-	"errors"
-	"fmt"
 	"log"
 	"os"
-	"strings"
 	"github.com/ddonskaya/feather/client"
 
 	"golang.org/x/crypto/ssh/terminal"
@@ -26,17 +23,15 @@ func StartSession(){
 		log.Fatalf("Error on cli session startup: %s. Exiting.", err.Error())
 	}
 	cli := NewTerminal(state, "")
-	prepareSession()
-
-	for {
-
-	}
 }
 
 func Request(c *client.FeatherClient, cmd string, args []string) (string, error) {
 	switch cmd{
 	case "PING":
+		ping(c, args)
 	}
+
+	return "", nil
 }
 
 
