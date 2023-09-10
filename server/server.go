@@ -1,10 +1,8 @@
 package server
 
 import (
-	"fmt"
 	"log"
 	"net"
-	"sync"
 	"github.com/ddonskaya/feather/utils"
 	"github.com/ddonskaya/feather/collections"
 
@@ -19,6 +17,7 @@ type Server struct {
 	buffers *utils.BufferPool
 	hm collections.HashMapCollection
 	ss collections.SortedSetCollection
+	logger *log.Logger
 }
 
 func FeatherServer() *Server {
@@ -30,7 +29,7 @@ func FeatherServer() *Server {
 }
 
 func (s *Server) HandleTCP() error {
-	tcpLS, err :=  net.ListenTCP("tcp", listenAddress)
+	tcpLS, err :=  net.ListenTCP("tcp", "127.0.0.1:8080")
 	if err != nil {
 		return err
 	}
