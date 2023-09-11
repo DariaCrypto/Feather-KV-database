@@ -24,13 +24,13 @@ func NewOptions(options ...Option) *Options{
     return opt
 }
 
-func (o *Options) WithAddress(addr string) Option {
+func WithAddress(addr string) Option {
 	return func(o *Options) {
 		o.Address = addr
 	}
 }
 
-func (o *Options) WithLogFile(logname string) Option {
+func WithLogFile(logname string) Option {
 	return func(o *Options) {
 		o.LogFile = logname
 	}
