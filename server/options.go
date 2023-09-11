@@ -39,9 +39,8 @@ func WithLogFile(logname string) Option {
 func (o *Options) setLogger() *log.Logger {
 	file, err := os.Create(o.LogFile)
 	if err != nil {
-		log.Println("options: can not open/create log file: %v", err)
+		log.Printf("options: can not open/create log file: %v", err)
 	}
-
 	return log.New(file, "", log.LstdFlags|log.Lshortfile)
 }
 
