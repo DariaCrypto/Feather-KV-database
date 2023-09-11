@@ -56,7 +56,7 @@ func (opt *Options) GetTCPAddress() *net.TCPAddr {
 
 func (opt *Options) GetAddress() string {
 	if opt.Address == "" {
-		opt.Address = "localhost:6869"
+		opt.Address = "127.0.0.1:6869"
 	}
 
 	return opt.Address
