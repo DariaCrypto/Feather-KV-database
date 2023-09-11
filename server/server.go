@@ -5,7 +5,6 @@ import (
 	"net"
 	"github.com/ddonskaya/feather/utils"
 	"github.com/ddonskaya/feather/collections"
-
 )
 
 type Server struct {
@@ -17,18 +16,23 @@ type Server struct {
 }
 
 func FeatherServer(opt *Options) *Server {
-	return &Server{
+	s := &Server{
 		buffers: utils.NewBuffer(),
 		hm: *collections.NewHashMapCollection(),
-		ss: collections.SortedSetCollection{},
+		ss: *collections.NewSortedSetCollection(),
 		options: opt,
 		logger: opt.setLogger(),
 	}
+	s.HandleTCP()
+	return s	
 }
 
+
 func (s *Server) HandleTCP() error {
+	s.logger.Println("Start")
 	tcpLS, err :=  net.ListenTCP("tcp", s.options.GetTCPAddress())
 	if err != nil {
+		s.logger.Printf("server: %v", err)
 		return err
 	}
 
