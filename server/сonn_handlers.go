@@ -1,7 +1,6 @@
 package server
 
 import (
-	"errors"
 	"net"
 
 	"github.com/ddonskaya/feather/protocol"
@@ -22,26 +21,14 @@ func newClient(conn net.Conn) *ConnHandler {
 }
 
 func (c *ConnHandler) HandleClientCmd() (reply []byte, err error) {
-
 	cmd := new(protocol.Command)
-
-	if read, err := utils.ReadData(c.conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
-		return nil, errors.New("")
-	}
-
-	idCmd := int(utils.ByteArrayToUint64(c.MsgHeader))
 	msgBuf := c.server.buffers.Get()
 	defer c.server.buffers.Put(msgBuf)
-
-	if read, err := utils.ReadData(c.conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
-		return nil, errors.New("")
-	}
-
 	result, err := c.executeCmd(cmd)
 	return c.encodeResponse(result, err)
 }
 
-func (c *ConnHandler) processCmd(){
+func (c *ConnHandler) ProcessCmd(){
 	for{
 		res, err := c.HandleClientCmd()
 

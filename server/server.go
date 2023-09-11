@@ -8,28 +8,26 @@ import (
 
 )
 
-const (
-	listenAddress = "127.0.0.1:8080"
-	poolSize      = 5
-)
-
 type Server struct {
 	buffers *utils.BufferPool
 	hm collections.HashMapCollection
 	ss collections.SortedSetCollection
+	options *Options
 	logger *log.Logger
 }
 
-func FeatherServer() *Server {
+func FeatherServer(opt *Options) *Server {
 	return &Server{
 		buffers: utils.NewBuffer(),
 		hm: *collections.NewHashMapCollection(),
 		ss: collections.SortedSetCollection{},
+		options: opt,
+		logger: opt.setLogger(),
 	}
 }
 
 func (s *Server) HandleTCP() error {
-	tcpLS, err :=  net.ListenTCP("tcp", "127.0.0.1:8080")
+	tcpLS, err :=  net.ListenTCP("tcp", s.options.GetTCPAddress())
 	if err != nil {
 		return err
 	}
@@ -46,6 +44,6 @@ func (s *Server) HandleTCP() error {
 			continue
 		}
 
-		go newClient(conn).HandleClientCmd()
+		go newClient(conn).ProcessCmd()
 	}
 }
