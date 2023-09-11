@@ -24,7 +24,7 @@ func main() {
 		c, err = cli.ObtainClient(host, port)
 	}
 	if err != nil {
-		log.Printf("clie: v%", err)
+		log.Printf("cli: %v", err)
 		return
 	}
 
