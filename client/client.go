@@ -8,30 +8,21 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const (
-	serverAddress = "127.0.0.1:8080"
-	numClients    = 10
-)
-
 type FeatherClient struct {
 	buffer utils.BufferPool
-	connPool  ConnPool
 	MsgHeader []byte
 }
 
 func NewFeatherClient() *FeatherClient {
 	client := &FeatherClient{
 		buffer: *utils.NewBuffer(),
-		connPool: *NewConnectionPool(),
 		MsgHeader: make([]byte, utils.MSG_SIZE),
 	}
 	return client
 }
 
 func PerformCommand(c *FeatherClient, command *protocol.Command) (*protocol.Response, error) {
-	//Get a connection from poolConnection
-	cn, err := c.connPool.Get()
-	defer c.connPool.Put(cn)
+	cn, err := NewConnection()
 	if err != nil {
 		return nil, errors.New("client: Can't got connection from connPool")
 	}
@@ -53,7 +44,7 @@ func PerformCommand(c *FeatherClient, command *protocol.Command) (*protocol.Resp
 	return reply, err
 }
 
-func (c *FeatherClient) getResponse(conn Connection) (*protocol.Response, error){
+func (c *FeatherClient) getResponse(conn *Connection) (*protocol.Response, error){
 	if _, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
 		return nil, err
 	}
