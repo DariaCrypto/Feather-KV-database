@@ -15,10 +15,10 @@ func connect(addr, network string) (*client.FeatherClient, error) {
 	c := client.NewFeatherClient()
 
 	if _, err := client.Ping(c); err != nil {
-		log.Printf("cli: connection error: %v\n", err)
+		log.Printf("cli: connection error: %v", err)
 		return nil, err
 	}
 
-	log.Printf("cli: connection is successful. Address connection is %s\n", addr)
+	log.Printf("cli: connection is successful. Address connection is %s", addr)
 	return c, nil
 }

@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	serverAddress = "127.0.0.1:8080"
+	serverAddress = "127.0.0.1:6870"
 	numClients    = 10
 )
 

@@ -1,43 +1,48 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"net"
-	"github.com/ddonskaya/feather/utils"
+
 	"github.com/ddonskaya/feather/collections"
+	"github.com/ddonskaya/feather/utils"
 )
 
 type Server struct {
-	buffers *utils.BufferPool
-	hm collections.HashMapCollection
-	ss collections.SortedSetCollection
-	options *Options
-	logger *log.Logger
+	buffers  *utils.BufferPool
+	hm       collections.HashMapCollection
+	ss       collections.SortedSetCollection
+	connPool ConnPool
+	options  *Options
+	logger   *log.Logger
 }
 
 func FeatherServer(opt *Options) *Server {
 	s := &Server{
-		buffers: utils.NewBuffer(),
-		hm: *collections.NewHashMapCollection(),
-		ss: *collections.NewSortedSetCollection(),
-		options: opt,
-		logger: opt.setLogger(),
+		buffers:  utils.NewBufferPool(),
+		hm:       *collections.NewHashMapCollection(),
+		ss:       *collections.NewSortedSetCollection(),
+		connPool: *NewConnectionPool(),
+		options:  opt,
+		logger:   opt.setLogger(),
 	}
 	s.HandleTCP()
-	return s	
+	return s
 }
 
-
 func (s *Server) HandleTCP() error {
-	s.logger.Println("Start")
-	tcpLS, err :=  net.ListenTCP("tcp", s.options.GetTCPAddress())
+	s.logger.Println("Start Feather server")
+
+	connTCP, err := net.ListenTCP("tcp", s.options.GetTCPAddress())
 	if err != nil {
-		s.logger.Printf("server: %v", err)
+		s.logger.Printf("server: can not listen tcp connection %v", err)
 		return err
 	}
 
 	for {
-		conn, err := tcpLS.AcceptTCP()
+		conn, err := connTCP.AcceptTCP()
+		s.connPool.Put(conn)
 		if err != nil {
 			log.Println(err)
 		}
@@ -48,6 +53,6 @@ func (s *Server) HandleTCP() error {
 			continue
 		}
 
-		go newClient(conn).ProcessCmd()
+		go newClient(conn, s).ProcessCmd()
 	}
 }

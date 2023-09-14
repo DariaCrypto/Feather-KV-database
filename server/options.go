@@ -2,10 +2,10 @@ package server
 
 import (
 	"log"
-	"os"
 	"net"
-	"strings"
+	"os"
 	"strconv"
+	"strings"
 )
 
 type Options struct {
@@ -15,13 +15,12 @@ type Options struct {
 
 type Option func(*Options)
 
-
-func NewOptions(options ...Option) *Options{
-    opt := &Options{}
-    for _, option := range options {
-        option(opt)
-    }
-    return opt
+func NewOptions(options ...Option) *Options {
+	opt := &Options{}
+	for _, option := range options {
+		option(opt)
+	}
+	return opt
 }
 
 func WithAddress(addr string) Option {
@@ -56,7 +55,7 @@ func (opt *Options) GetTCPAddress() *net.TCPAddr {
 
 func (opt *Options) GetAddress() string {
 	if opt.Address == "" {
-		opt.Address = "127.0.0.1:6869"
+		opt.Address = "127.0.0.1:6870"
 	}
 
 	return opt.Address

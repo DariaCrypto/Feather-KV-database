@@ -7,22 +7,18 @@ import (
 	"github.com/ddonskaya/feather/client"
 )
 
-var (
-	host   string
-	port   int
-	socket string
-)
-
 func main() {
 
 	var (
-		c *client.FeatherClient
+		c   *client.FeatherClient
 		err error
 	)
-	
-	if socket == "" {
-		c, err = cli.ObtainClient(host, port)
-	}
+
+	host := "127.0.0.1"
+	port := 6870
+
+	c, err = cli.ObtainClient(host, port)
+
 	if err != nil {
 		log.Printf("cli: %v", err)
 		return

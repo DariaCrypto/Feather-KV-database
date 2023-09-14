@@ -13,7 +13,7 @@ type Connection struct {
 }
 
 func NewConnection() (*Connection, error) {
-	conn, err := net.DialTimeout("tcp", "", 5*time.Second)
+	conn, err := net.DialTimeout("tcp", "127.0.0.1:6870", 5*time.Second)
 	if err != nil {
 		return nil, err
 	}

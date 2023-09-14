@@ -2,20 +2,22 @@ package client
 
 import (
 	"errors"
+	"fmt"
 	"log"
+
 	"github.com/ddonskaya/feather/protocol"
 	"github.com/ddonskaya/feather/utils"
 	"google.golang.org/protobuf/proto"
 )
 
 type FeatherClient struct {
-	buffer utils.BufferPool
+	buffer    utils.BufferPool
 	MsgHeader []byte
 }
 
 func NewFeatherClient() *FeatherClient {
 	client := &FeatherClient{
-		buffer: *utils.NewBuffer(),
+		buffer:    *utils.NewBufferPool(),
 		MsgHeader: make([]byte, utils.MSG_SIZE),
 	}
 	return client
@@ -24,7 +26,7 @@ func NewFeatherClient() *FeatherClient {
 func PerformCommand(c *FeatherClient, command *protocol.Command) (*protocol.Response, error) {
 	cn, err := NewConnection()
 	if err != nil {
-		return nil, errors.New("client: Can't got connection from connPool")
+		return nil, errors.New("client: сan not got connection failed")
 	}
 
 	marshaledCmd, err := proto.Marshal(command)
@@ -34,9 +36,8 @@ func PerformCommand(c *FeatherClient, command *protocol.Command) (*protocol.Resp
 
 	msgSize := utils.UintToByteArray(uint64(len(marshaledCmd)))
 	msg := append(msgSize, marshaledCmd...)
-
 	if _, err := cn.Write(msg); err != nil {
-		log.Println("client: ", err)
+		log.Println("client: can not write data to connection", err)
 		return nil, err
 	}
 
@@ -44,25 +45,21 @@ func PerformCommand(c *FeatherClient, command *protocol.Command) (*protocol.Resp
 	return reply, err
 }
 
-func (c *FeatherClient) getResponse(conn *Connection) (*protocol.Response, error){
-	if _, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE); err != nil {
-		return nil, err
-	}
-
-	_, err := utils.ReadData(conn, c.MsgHeader, utils.MSG_SIZE)
-	if err != nil {
-		return nil, err
-	}
-
-	//Get id command
-	idCmd := int(utils.ByteArrayToUint64(c.MsgHeader))
-	msgBuf := c.buffer.Get().([]byte)
+func (c *FeatherClient) getResponse(conn *Connection) (*protocol.Response, error) {
+	msgBuf := c.buffer.Get()
 	defer c.buffer.Put(msgBuf)
 
-	resp := &protocol.Response{}
-	if err := proto.Unmarshal(msgBuf[:idCmd], resp); err != nil {
-		return nil, err
+	readData, err := conn.Read(msgBuf.Bytes())
+	if err != nil {
+		conn.Close()
+		return nil, fmt.Errorf("client: can not read data from a connection: %v", err)
 	}
 
-	return resp, nil
+	var response protocol.Response
+	if readData > 0 && err == nil {	
+		if err := proto.Unmarshal(msgBuf.Bytes()[:len(msgBuf.Bytes())-1], &response); err != nil { // fix problem with len msgBuf
+			return nil, fmt.Errorf("conn_handler: can not Unmarshal read data: %v", err)
+		}
+	}
+	return &response, nil
 }
