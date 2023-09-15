@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 
 	"github.com/ddonskaya/feather/cli"
@@ -24,6 +25,9 @@ func main() {
 		return
 	}
 
-	term := cli.NewTerminal("Start terminal")
+	term, err := cli.NewTerminal("Start terminal")
+	if err != nil {
+		log.Panicf("can not create terminal: v%", err)
+	}
 	term.StartSession(c)
 }
