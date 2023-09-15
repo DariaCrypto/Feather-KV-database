@@ -15,9 +15,9 @@ type Terminal struct {
 }
 
 func NewTerminal(msg string) *Terminal {
-	state, err := terminal.MakeRaw(0)
+	state, err := terminal.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
-		log.Fatalf("Error on cli session startup: %s. Exiting.", err.Error())
+		log.Fatalf("Error on cli session startup: %s Exiting.", err)
 	}
 
 	return &Terminal{state: state, helpMsg: msg}
