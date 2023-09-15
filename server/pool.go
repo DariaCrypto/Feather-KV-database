@@ -3,10 +3,11 @@ package server
 import (
 	"net"
 	"sync"
+
+	"github.com/ddonskaya/feather/utils"
 )
 
 const (
-	serverAddress = "127.0.0.1:6870"
 	numClients    = 10
 )
 
@@ -27,7 +28,7 @@ func (p *ConnPool) Get() (net.Conn, error) {
 	case conn := <-p.pool:
 		return conn, nil
 	default:
-		conn, err := net.Dial("tcp", serverAddress)
+		conn, err := net.Dial("tcp", utils.SERVER)
 		if err != nil {
 			return nil, err
 		}

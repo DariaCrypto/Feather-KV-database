@@ -6,6 +6,7 @@ import (
 	"syscall"
 
 	"github.com/ddonskaya/feather/server"
+	"github.com/ddonskaya/feather/utils"
 )
 
 func Shutdown() {
@@ -20,9 +21,8 @@ func Shutdown() {
 }
 
 func main() {
-	Shutdown()
 	opt := server.NewOptions(
-		server.WithAddress("127.0.0.1:6870"),
+		server.WithAddress(utils.SERVER),
 		server.WithLogFile("LOG_FEATHER_SERVER.txt"),
 	)
 
