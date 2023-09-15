@@ -1,31 +1,40 @@
 package cli
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"os"
 
 	"github.com/ddonskaya/feather/client"
-
 	"golang.org/x/crypto/ssh/terminal"
 )
 
 type Terminal struct {
+	term    *terminal.Terminal
 	state   *terminal.State
 	helpMsg string
 }
 
-func NewTerminal(msg string) *Terminal {
+func NewTerminal(msg string) (*Terminal, error) {
+
+	screen := struct {
+		io.Reader
+		io.Writer
+	}{os.Stdin, os.Stdout}
+
+	term := terminal.NewTerminal(screen, "")
+	term.SetPrompt("feather-cli >>> ")
 	state, err := terminal.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
-		log.Fatalf("Error on cli session startup: %s Exiting.", err)
+		return nil, fmt.Errorf("error on cli session startup: %v", err)
 	}
-
-	return &Terminal{state: state, helpMsg: msg}
+	return &Terminal{term: term, state: state, helpMsg: msg}, nil
 }
 
 func (t *Terminal) StartSession(c *client.FeatherClient) {
 	for {
-		cmd, args, err := parseCommand()
+		cmd, args, err := parseCommand(t)
 		if err != nil {
 			continue
 		}
