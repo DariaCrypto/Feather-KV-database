@@ -13,11 +13,11 @@ func Ping(c *FeatherClient) (*protocol.Response, error){
 		Command: &cmdId,
 	}
 	
-	responce, err := PerformCommand(c, cmd)
+	response, err := PerformCommand(c, cmd)
 	if err != nil {
 		return nil, fmt.Errorf("client: can't process PING command %v", err)
 	}
-	return responce, nil
+	return response, nil
 }
 
 //SET command

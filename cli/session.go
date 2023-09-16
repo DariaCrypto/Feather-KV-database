@@ -17,7 +17,6 @@ type Terminal struct {
 }
 
 func NewTerminal(msg string) (*Terminal, error) {
-
 	screen := struct {
 		io.Reader
 		io.Writer
@@ -36,23 +35,25 @@ func (t *Terminal) StartSession(c *client.FeatherClient) {
 	for {
 		cmd, args, err := parseCommand(t)
 		if err != nil {
+			log.Printf("cli: can not read parse command from terminal: %v", err)
 			continue
 		}
 
-		request(c, cmd, args)
+		response, err := request(c, cmd, args)
 		if err != nil {
+			log.Printf("cli: can not request a server: %v", err)
 			continue
 		}
 	}
 }
 
-func request(c *client.FeatherClient, cmd string, args []string) (string, error) {
+func request(c *client.FeatherClient, cmd string, args []string) (response string, err error) {
 	switch cmd {
 	case "PING":
-		ping(c, args)
+		response, err = ping(c, args)
 	}
 
-	return "", nil
+	return
 }
 
 func (t *Terminal) CloseSession() {

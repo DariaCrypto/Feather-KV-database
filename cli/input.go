@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -9,7 +9,7 @@ import (
 func parseCommand(t *Terminal) (string, []string, error) {
 	comm, err := t.term.ReadLine()
 	if err != nil {
-		return "", nil, errors.New("cli: error on command parsing: " + err.Error())
+		return "", nil, fmt.Errorf("cli: error on command parsing: %v", err)
 	}
 	re := regexp.MustCompile(`\b\w+\b`)
 	words := re.FindAllString(comm, -1)
@@ -17,5 +17,8 @@ func parseCommand(t *Terminal) (string, []string, error) {
 	for _, str := range words {
 		arguments = append(arguments, strings.TrimSpace(str))
 	}
-	return strings.ToUpper(strings.TrimSpace(comm)), arguments, err
+	if len(arguments) == 1 {
+		return strings.ToUpper(strings.TrimSpace(arguments[0])), []string{}, err
+	}
+	return strings.ToUpper(strings.TrimSpace(arguments[0])), arguments[1:], err
 }
